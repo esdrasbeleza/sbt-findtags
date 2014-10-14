@@ -37,7 +37,7 @@ object FindtagsPlugin extends AutoPlugin {
         println(s"${foundTags.size} tags found:")
         foundTags.foreach { result =>
           val (name, lineNumber, content) = (result._1, result._2, result._3)
-          println(s"$name:$lineNumber:$content\n")
+          println(s"$name:$lineNumber:$content")
         }
       }
     }
