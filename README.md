@@ -6,7 +6,7 @@ A sbt plugin to find tags in source files.
 Not available yet
 -----------------
 
-This plugin is not available to download from any repository. If you want to try it, you can compile its source code and run `publishLocal` on sbt.
+This plugin is not available to download from any repository yet. If you want to try it, you can compile its source code and run `publishLocal` on sbt.
 
 
 Adding to your project
