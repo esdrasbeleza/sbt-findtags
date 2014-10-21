@@ -3,11 +3,6 @@ sbt-findtags
 
 A sbt plugin to find tags in source files.
 
-Not available yet
------------------
-
-This plugin is not available to download from any repository yet. If you want to try it, you can compile its source code and run `publishLocal` on sbt.
-
 
 Adding to your project
 ----------------------
@@ -15,7 +10,7 @@ Adding to your project
 Add the following line to your `plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.1-SNAPSHOT")
+addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.1-20141020")
 ```
 
 Configuring
@@ -26,6 +21,7 @@ Until now, sbt-findtags has the following keys that can be added to build.sbt:
 ```scala
 findtagsTags := Seq("TODO", "FIXME", "IMPROVEMENT")
 ```
+The key above is optional and without it findtags will look for `TODO` and `FIXME`.
 
 Running
 -------
