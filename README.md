@@ -10,20 +10,43 @@ Adding to your project
 Add the following line to your `plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.1-20141020")
+addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.2")
 ```
 
 Configuring
 -----------
 
-Until now, sbt-findtags has the following keys that can be added to build.sbt:
+In your configuration file, import the sbt-findtags keys:
+
+```scala
+import sbtfindtags.FindtagsPlugin._
+```
+
+`findtagsTags` set which keys must be searched. The default values are `TODO` 
+and `FIXME`.
 
 ```scala
 findtagsTags := Seq("TODO", "FIXME", "IMPROVEMENT")
 ```
-The key above is optional and without it findtags will look for `TODO` and `FIXME`.
+
+`findtagsFailsIfTagsAreFound`, if set to `true`, considers that if some tag is 
+found then it must be an error. The default value is `false`.
+
+```scala
+findtagsFailsIfTagsAreFound := true
+```
+
+This is specially useful if you want your build to break if we have any tags. To
+achieve that, add the following line and so sbt-findtags will run before your 
+code compiles:
+
+```scala
+compile <<= (compile in Compile) dependsOn findtags
+```
 
 Running
 -------
 
-Run the command `findtags` in sbt. The output will be the filenames that contain the found tags and their filenumber.
+Run the command `findtags` in sbt. The output will be the filenames that contain
+the found tags and their filenumber.
+

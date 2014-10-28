@@ -1,12 +1,10 @@
 import bintray.Keys._
-import java.util.Calendar
-import java.text.SimpleDateFormat
 
 sbtPlugin := true
 
 name := "sbt-findtags"
 
-version := "0.1-" + (new SimpleDateFormat("yyyMMdd") format Calendar.getInstance.getTime)
+version := "0.2"
 
 organization := "com.esdrasbeleza"
 
