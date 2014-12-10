@@ -13,6 +13,7 @@ object FindtagsPlugin extends AutoPlugin {
     val findtagsFailsIfTagsAreFound = settingKey[Boolean]("Consider tags as a failure.")
   }
 
+
   import autoImport._
 
   override lazy val projectSettings = Seq(
@@ -22,27 +23,28 @@ object FindtagsPlugin extends AutoPlugin {
       val fileList = (unmanagedSources in Compile).value
       val projectDirectory = (baseDirectory in Compile).value
       val possibleTags = findtagsTags.value
-
-     val foundTags = fileList.foldLeft[Seq[(String, Int, String)]](Nil){ (currentList, file) =>
+      val log = streams.value.log
+      val foundTags = fileList.foldLeft[Seq[(String, Int, String)]](Nil){ (currentList, file) =>
         currentList ++ parseLines(file, possibleTags, projectDirectory).toSeq
       }
 
       foundTags match {
-        case Nil => println("No tags were found")
+        case Nil => log.info("No tags were found")
         case _ => {
           val outputFile = target.value / "findtags/output.txt"
           if (outputFile.exists()) { outputFile.delete() }
 
-          println(s"${foundTags.size} tags found:")
+          log.info(s"${foundTags.size} tags found:")
           foundTags.foreach { result =>
             val (name, lineNumber, content) = (result._1, result._2, result._3)
             val output = s"$name:$lineNumber:$content".trim
             IO.write(outputFile, output)
-            println(output)
+            log.info(output)
           }
 
           if (findtagsFailsIfTagsAreFound.value) {
-            sys.error(s"Failing, ${foundTags.size} tags were found")
+            log.error(s"Failing, ${foundTags.size} tags were found.")
+            log.error("sbt-findtags was configured to fail if tags are found. Fix your project or change findtagsFailsIfTagsAreFound to false in your build configuration to get rid of this message.")
           }
         }
       }
