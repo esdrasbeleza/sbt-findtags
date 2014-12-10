@@ -10,7 +10,7 @@ Adding to your project
 Add the following line to your `plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.2")
+addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.3")
 ```
 
 Configuring
@@ -48,5 +48,6 @@ Running
 -------
 
 Run the command `findtags` in sbt. The output will be the filenames that contain
-the found tags and their filenumber.
+the found tags and their filenumber. They will also be available in 
+`buildDir/findtags/output.txt`.
 
