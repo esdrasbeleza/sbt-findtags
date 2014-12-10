@@ -1,7 +1,8 @@
 sbt-findtags
 ============
 
-A sbt plugin to find tags in source files.
+A sbt plugin to find tags in source files, like `TODO` and `FIXME`. You can use
+it to keep track of your tags and your technical debt.
 
 
 Adding to your project
