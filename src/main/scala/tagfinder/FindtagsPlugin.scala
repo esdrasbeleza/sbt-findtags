@@ -20,10 +20,11 @@ object FindtagsPlugin extends AutoPlugin {
     findtagsFailsIfTagsAreFound := false,
     findtags := {
       val fileList = (unmanagedSources in Compile).value
+      val projectDirectory = (baseDirectory in Compile).value
       val possibleTags = findtagsTags.value
 
      val foundTags = fileList.foldLeft[Seq[(String, Int, String)]](Nil){ (currentList, file) =>
-        currentList ++ parseLines(file, possibleTags).toSeq
+        currentList ++ parseLines(file, possibleTags, projectDirectory).toSeq
       }
 
       foundTags match {
@@ -48,13 +49,12 @@ object FindtagsPlugin extends AutoPlugin {
     }
   )
 
-
-  def parseLines(file: File, possibleTags: Seq[String]) = {
+  def parseLines(file: File, possibleTags: Seq[String], projectDirectory: File) = {
     for {
       (content, lineNumber) <- Source.fromFile(file).getLines.zipWithIndex
       tag <- possibleTags
       if content.contains(tag)
-    } yield (file.getPath, lineNumber + 1, content)
+    } yield (IO.relativize(projectDirectory, file).getOrElse(file.getPath), lineNumber + 1, content)
   }
 
 }
