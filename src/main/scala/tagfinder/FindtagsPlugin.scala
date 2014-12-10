@@ -29,10 +29,15 @@ object FindtagsPlugin extends AutoPlugin {
       foundTags match {
         case Nil => println("No tags were found")
         case _ => {
+          val outputFile = target.value / "findtags/output.txt"
+          if (outputFile.exists()) { outputFile.delete() }
+
           println(s"${foundTags.size} tags found:")
           foundTags.foreach { result =>
             val (name, lineNumber, content) = (result._1, result._2, result._3)
-            println(s"$name:$lineNumber:$content")
+            val output = s"$name:$lineNumber:$content".trim
+            IO.write(outputFile, output)
+            println(output)
           }
 
           if (findtagsFailsIfTagsAreFound.value) {
