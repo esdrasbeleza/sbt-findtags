@@ -37,14 +37,6 @@ found then it must be an error. The default value is `false`.
 findtagsFailsIfTagsAreFound := true
 ```
 
-This is specially useful if you want your build to break if we have any tags. To
-achieve that, add the following line and so sbt-findtags will run before your 
-code compiles:
-
-```scala
-compile <<= (compile in Compile) dependsOn findtags
-```
-
 Running
 -------
 

@@ -20,10 +20,11 @@ object FindtagsPlugin extends AutoPlugin {
     findtagsTags := Seq("TODO", "FIXME"),
     findtagsFailsIfTagsAreFound := false,
     findtags := {
+      val log = streams.value.log
+      log.info("Starting find tags:")
       val fileList = (unmanagedSources in Compile).value
       val projectDirectory = (baseDirectory in Compile).value
       val possibleTags = findtagsTags.value
-      val log = streams.value.log
       val foundTags = fileList.foldLeft[Seq[(String, Int, String)]](Nil){ (currentList, file) =>
         currentList ++ parseLines(file, possibleTags, projectDirectory).toSeq
       }
@@ -48,7 +49,8 @@ object FindtagsPlugin extends AutoPlugin {
           }
         }
       }
-    }
+    },
+    compile <<= (compile in Compile) dependsOn findtags
   )
 
   def parseLines(file: File, possibleTags: Seq[String], projectDirectory: File) = {
