@@ -19,30 +19,18 @@ Configuring
 
 In your configuration file, import the sbt-findtags keys:
 
-```scala
-import sbtfindtags.FindtagsPlugin._
-```
-
-`findtagsTags` set which keys must be searched. The default values are `TODO` 
+`FindTags.tags` set which keys must be searched. The default values are `TODO`
 and `FIXME`.
 
 ```scala
-findtagsTags := Seq("TODO", "FIXME", "IMPROVEMENT")
+FindTags.tags := Seq("TODO", "FIXME", "IMPROVEMENT")
 ```
 
-`findtagsFailsIfTagsAreFound`, if set to `true`, considers that if some tag is 
+`FindTags.failOnTags`, if set to `true`, considers that if some tag is
 found then it must be an error. The default value is `false`.
 
 ```scala
-findtagsFailsIfTagsAreFound := true
-```
-
-This is specially useful if you want your build to break if we have any tags. To
-achieve that, add the following line and so sbt-findtags will run before your 
-code compiles:
-
-```scala
-compile <<= (compile in Compile) dependsOn findtags
+FindTags.failOnTags := true
 ```
 
 Running
