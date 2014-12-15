@@ -4,7 +4,7 @@ sbtPlugin := true
 
 name := "sbt-findtags"
 
-version := "0.3"
+version := "0.4"
 
 organization := "com.esdrasbeleza"
 

@@ -11,7 +11,7 @@ Adding to your project
 Add the following line to your `plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.3")
+addSbtPlugin("com.esdrasbeleza" % "sbt-findtags" % "0.4")
 ```
 
 Configuring
