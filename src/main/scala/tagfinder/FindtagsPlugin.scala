@@ -10,28 +10,44 @@ object FindtagsPlugin extends AutoPlugin {
   object autoImport {
     val findtags = taskKey[Unit]("Find tags in source files")
 
-    object FindTags {
-      val tags = settingKey[Seq[String]]("A list of tags that will be searched in source files, like TODO and FIXME")
-      val failOnTags = settingKey[Boolean]("Consider tags as a failure.")
+    object FindTagsKeys {
+      lazy val tagList = settingKey[Seq[String]]("A list of tags that will be searched in source files, like TODO and FIXME")
+      lazy val strict = settingKey[Boolean]("Consider tags as a failure.")
     }
-  }
 
+    lazy val baseFindtagsSettings: Seq[Def.Setting[_]] = Seq(
+      findtags := {
+        FindTags((FindTagsKeys.tagList in findtags).value,
+                  (FindTagsKeys.strict in findtags).value,
+                  (unmanagedSources in findtags).value,
+                  (baseDirectory in findtags).value,
+                  (target.value / "findtags/output.txt"),
+                  streams.value.log)
+      },
+      FindTagsKeys.tagList in findtags := Seq("TODO", "FIXME"),
+      FindTagsKeys.strict in findtags := false,
+      compile <<= (compile in Compile) dependsOn findtags
+   )
+  }
 
   import autoImport._
 
-  override lazy val projectSettings = Seq(
-    FindTags.tags := Seq("TODO", "FIXME"),
-    FindTags.failOnTags := false,
 
-    findtags := {
-      val log = streams.value.log
 
-      log.info("Starting find tags:")
+  override lazy val projectSettings =
+      inConfig(Compile)(baseFindtagsSettings)
+}
 
-      val fileList = (unmanagedSources in Compile).value
-      val projectDirectory = (baseDirectory in Compile).value
-      val possibleTags = findtagsTags.value
-
+object FindTags {
+  def apply(possibleTags: Seq[String], 
+            strict: Boolean, 
+            fileList: Seq[File], 
+            projectDirectory: File,
+            outputFile: File,
+            log: Logger) = {
+      val mergedTags = possibleTags.mkString(", ")
+      log.info(s"Looking for tags (${mergedTags}):")
+     
       val tagsFound = fileList.foldLeft[Seq[(String, Int, String)]](Nil){ (currentList, file) =>
         currentList ++ parseLines(file, possibleTags, projectDirectory).toSeq
       }
@@ -39,7 +55,6 @@ object FindtagsPlugin extends AutoPlugin {
       tagsFound match {
         case Nil => log.info("No tags were found")
         case _ => {
-          val outputFile = target.value / "findtags/output.txt"
           if (outputFile.exists()) { outputFile.delete() }
 
           log.info(s"${tagsFound.size} tags found:")
@@ -50,15 +65,13 @@ object FindtagsPlugin extends AutoPlugin {
             log.info(output)
           }
 
-          if (findtagsFailsIfTagsAreFound.value) {
+          if (strict) {
             log.error(s"Failing, ${tagsFound.size} tags were found.")
             log.error("sbt-findtags was configured to fail if tags are found. Fix your project or change findtagsFailsIfTagsAreFound to false in your build configuration to get rid of this message.")
           }
         }
       }
-    },
-    compile <<= (compile in Compile) dependsOn findtags
-  )
+    }
 
   def parseLines(file: File, possibleTags: Seq[String], projectDirectory: File) = {
     for {
@@ -67,5 +80,4 @@ object FindtagsPlugin extends AutoPlugin {
       if content.contains(tag)
     } yield (IO.relativize(projectDirectory, file).getOrElse(file.getPath), lineNumber + 1, content)
   }
-
 }

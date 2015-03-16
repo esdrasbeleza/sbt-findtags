@@ -19,18 +19,18 @@ Configuring
 
 In your configuration file, import the sbt-findtags keys:
 
-`FindTags.tags` set which keys must be searched. The default values are `TODO`
+`FindTagsKeys.tagList` set which keys must be searched. The default values are `TODO`
 and `FIXME`.
 
 ```scala
-FindTags.tags := Seq("TODO", "FIXME", "IMPROVEMENT")
+FindTagsKeys.tagList := Seq("TODO", "FIXME", "IMPROVEMENT")
 ```
 
-`FindTags.failOnTags`, if set to `true`, considers that if some tag is
+`FindTagsKeys.strict`, if set to `true`, considers that if some tag is
 found then it must be an error. The default value is `false`.
 
 ```scala
-FindTags.failOnTags := true
+FindTagsKeys.strict := true
 ```
 
 Running
